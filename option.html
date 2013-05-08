@@ -1,0 +1,47 @@
+<html>
+<head>
+	<title>Sakai Plus Option Page</title>
+	<style type="text/css">
+		html, body {
+		    margin: 0;
+		    padding: 0;
+		    text-align: center; /* !!! */
+		}
+
+		#content {
+		    margin: 0 auto;
+		    text-align: left;
+		    width: 300px;
+		}
+		#header {
+		    text-align: center;
+		}
+		#warning {
+			color: #F00E0E;
+		}
+		#success {
+			color: #00AA14;
+		}
+	</style>
+	<script src="jquery-1.9.1.min.js"></script>
+	<script src="option.js"></script>
+</head>
+<body>
+	<div id="content">
+		<div id="header">
+			<h2>Sakai Plus Option Page</h1>
+		</div>
+		<div id="main">
+			<form id="form">
+				Username: <input type="text" id="username">
+				<br>
+				Password: <input type="password" id="password">
+				<br>
+				<input type="submit" value="Save" id="save">
+				<p id="warning"></p>
+				<p id="success"></p>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,46 +1,34 @@
-// auto login
-var form = document.getElementById("loginForm")
-if (form){
-	form.eid.value="5113709074";
-	form.pw.value="19930414";
-	form.submit.click();
-}
+// // MAKE THIS OPTINAL auto login
+// var form = document.getElementById("loginForm")
+// if (form){
+// 	form.eid.value="";
+// 	form.pw.value="";
+// 	form.submit.click();
+// }
 
-// get/set last visit time
-if(sessionStorage.getItem("sessionLastTime")){
-	var lastTime = sessionStorage.getItem("sessionLastTime");
-	localStorage.setItem("lastTime", new Date().getTime());	
-} else if(localStorage.getItem("lastTime")){
-	var lastTime = localStorage.getItem("lastTime");
-	sessionStorage.setItem("sessionLastTime", lastTime);
-	localStorage.setItem("lastTime", new Date().getTime());
-} else{
-	var lastTime = new Date().getTime();
-	localStorage.setItem("lastTime", lastTime);
-	sessionStorage.setItem("sessionLastTime", lastTime);
-}
+unread = {unread_num: 0, unread_title: []};
+// Get unread annoucement
+chrome.runtime.onMessage.addListener(
+	function(request, sender, sendResponse) {
+		unread = request;
+    	console.log(request);
+    	highlight();
+      	// sendResponse({farewell: "goodbye"});
+});
 
-// parse annoucement/resources time
-$('iframe').load(function() 
-{
-	var table = document.getElementsByTagName("iframe")[0].contentWindow.document.getElementsByTagName("tbody")[0];
-	if (table){
-		var trs = table.getElementsByTagName("tr");
-		var trsLength = trs.length; 
-		for (var i = 0; i < trsLength; i++){
-			var tds = trs[i].getElementsByTagName("td");
-			var tdsLength = tds.length; 
-			for (var j = 0; j < tdsLength; j++){
-				if(tds[j].headers == "date"){
-					var publishTimeStr = tds[j].innerText;
-					var publishTime = new Date(publishTimeStr).getTime();
-					if (publishTime >= lastTime){
-						trs[i].style.backgroundColor = "#FFFF00";
-					}
-				}
+
+function highlight(){
+	// Highlight new annoucement
+	var iframes = document.getElementsByTagName("iframe")
+	for (var key in iframes){
+		iframe = iframes[key]
+		if (iframe.getAttribute("title") == "Recent Announcements "){
+			iframe_content = iframe.contentWindow.document.getElementsByTagName("html")[0];
+			for (var i in unread.unread_title){
+				var iframe_content_str = iframe_content.innerHTML.toString();
+				console.log(iframe_content_str);
+				iframe_content.innerHTML = iframe_content_str.replace(unread.unread_title[i]+"</a>", unread.unread_title[i]+"</a>"+'<span style="color: #F00E0E;"> NEW</span>')
 			}
-
 		}
 	}
-});
-	
+}

@@ -1,7 +1,7 @@
 if (localStorage.getItem("lastVisitTime")){
 	lastVisitTime = localStorage.getItem("lastVisitTime");
 } else{
-	lastVisitTime = -1;
+	lastVisitTime = new Date().getTime();
 }
 
 

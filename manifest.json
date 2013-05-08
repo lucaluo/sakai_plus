@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Sakai Plus",
-  "description": "This extension enhance the functionality of JI-Sakai",
+  "description": "This extension enhances the functionality of JI-Sakai",
   "version": "0.1",
   "browser_action": {
     "default_icon": "icon.png",
@@ -15,10 +15,10 @@
     }
   ],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": true
+    "scripts": ["jquery-1.9.1.min.js", "background.js"]
   },
   "permissions": [
     "tabs", "http://sakai.umji.sjtu.edu.cn/*"
-  ]
+  ],
+  "options_page": "option.html"
 }

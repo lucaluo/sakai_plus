@@ -142,14 +142,14 @@ function checkNew()
 								}
 								// Check if new annoucement
 								var publishTime = new Date(annouce_time).getTime();
-								if (publishTime >= lastVisitTime){
+								// if (publishTime >= lastVisitTime){
 									request.unread_num += 1;
 									annouce_title = tochar(annouce_title);
 									request.unread_title[request.unread_num-1] = annouce_title;
 
 
 									console.log(request.unread_num + request.unread_title[request.unread_num-1]);
-								}
+								// }
 							}
 							if (outer_count == 0 && inner_count == 0){
 								unread = request;

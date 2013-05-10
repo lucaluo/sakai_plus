@@ -30,9 +30,5 @@ $( document ).ready(function() {
 				}
 			});
 		}
-		
-
-		
-		// If not, ask again
 	});
 });

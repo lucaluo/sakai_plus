@@ -1,3 +1,7 @@
+// Bind event
+var runtimeOrExtension = chrome.runtime && chrome.runtime.sendMessage ?
+                         'runtime' : 'extension';
+
 $( document ).ready(function() {
 	// Read username & psw from local storage
 	if (localStorage.getItem("username") && localStorage.getItem("password")){
@@ -36,7 +40,7 @@ $( document ).ready(function() {
 					localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
 					$("#warning")[0].innerHTML = ""
 					$("#success")[0].innerHTML = "Succeed! You can close this page now."
-					chrome.runtime.sendMessage({message: "checkNew"}, function(response) {
+					chrome[runtimeOrExtension].sendMessage({message: "checkNew"}, function(response) {
 						// Get response
 					});
 				} else{

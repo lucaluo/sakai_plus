@@ -1,14 +1,10 @@
-// // MAKE THIS OPTINAL auto login
-// var form = document.getElementById("loginForm")
-// if (form){
-// 	form.eid.value="";
-// 	form.pw.value="";
-// 	form.submit.click();
-// }
+// Bind event
+var runtimeOrExtension = chrome.runtime && chrome.runtime.sendMessage ?
+                         'runtime' : 'extension';
 
 unread = {unread_num: 0, unread_title: []};
 // Get unread annoucement
-chrome.runtime.onMessage.addListener(
+chrome[runtimeOrExtension].onMessage.addListener(
 	function(request, sender, sendResponse) {
 		unread = request;
     	console.log(request);

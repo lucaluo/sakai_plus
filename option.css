@@ -2,7 +2,7 @@
 * { margin: 0; padding: 0; }
 
 body {
-	font: 13px freesans,clean,sans-serif; 
+	font: 13px Arial, Helvetica, sans-serif; 
 	color: #444444;
 }
 
@@ -52,13 +52,13 @@ input[type="text"], input[type="password"] {
 }
 
 #warning {
-	font: 15px freesans,clean,sans-serif;
+	font: 15px Arial, Helvetica, sans-serif;
 	line-height: 10px;
 	float: right;
 	color: #F00E0E;
 }
 #success {
-	font: 15px freesans,clean,sans-serif;
+	font: 15px Arial, Helvetica, sans-serif;
 	line-height: 10px;
 	float: right;
 	color: #2B55AD;
@@ -69,7 +69,7 @@ input[type="text"], input[type="password"] {
   cursor: pointer; 
   padding: 2px 7px;
   box-shadow:  1px 1px 2px #aaaaaa; border: none;
-  font: 13px arial,freesans,clean,sans-serif; 
+  font: 13px Arial, Helvetica, sans-serif; 
   line-height: 19px; color: white; text-shadow: 1px 1px 1px #222222;
   border-radius: 3px 2px; -webkit-border-radius: 3px 2px; -moz-border-radius: 3px 2px;
   background: -webkit-gradient(linear, left top, left bottom, from(#3F6ED4), to(#2B55AD));}

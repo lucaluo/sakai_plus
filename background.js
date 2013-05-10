@@ -3,7 +3,14 @@ function checkOptions() {
 		lastVisitTime = localStorage.getItem("lastVisitTime");
 	} else{
 		lastVisitTime = new Date().getTime();
-		localStorage.setItem("lastVisitTime", lastVisitTime)
+		localStorage.setItem("lastVisitTime", lastVisitTime);
+	}
+
+	if (localStorage.getItem("notificationTime")){
+		notificationTime = localStorage.getItem("notificationTime");
+	} else{
+		notificationTime = new Date().getTime();
+		localStorage.setItem("notificationTime", notificationTime);
 	}
 
 	if (localStorage.getItem("checkInterval")){
@@ -25,13 +32,18 @@ function checkOptions() {
 	}
 }
 
+// Bind event
+var runtimeOrExtension = chrome.runtime && chrome.runtime.sendMessage ?
+                         'runtime' : 'extension';
+
 // Check by schedule
 unread = {unread_num: 0, unread_title: []};
+unnotify = {unnotify_num: 0, unnotify_title: []};
 checkNew();
 setInterval(function(){checkNew()}, checkInterval * 60 * 1000);
 
 // Check when get message
-chrome.runtime.onMessage.addListener(
+chrome[runtimeOrExtension].onMessage.addListener(
   	function(request, sender, sendResponse) {
     	if (request.message == "checkNew"){
     		checkNew();
@@ -77,6 +89,7 @@ chrome.browserAction.onClicked.addListener(openSakai);
 function checkNew()
 {
 	checkOptions();
+	unnotify = {unnotify_num: 0, unnotify_title: []};
 	// Ask for usrname & pw
 	if (localStorage.getItem("username") && localStorage.getItem("password")){
 		userName = localStorage.getItem("username");
@@ -166,6 +179,11 @@ function checkNew()
 									annouce_title = tochar(annouce_title);
 									request.unread_title[request.unread_num-1] = annouce_title;
 
+									if (publishTime >= notificationTime){
+										unnotify.unnotify_num += 1;
+										unnotify.unnotify_title[unnotify.unnotify_num] = annouce_title;
+									}	
+
 
 									console.log(request.unread_num + request.unread_title[request.unread_num-1]);
 								}
@@ -176,7 +194,9 @@ function checkNew()
 								chrome.browserAction.setBadgeText({text: unread.unread_num.toString()});
 								// Show notification
 								if (ifNotify){
-									for (key in unread.unread_title) {
+									notificationTime = new Date().getTime();
+									localStorage.setItem("notificationTime", notificationTime);
+									for (key in unnotify.unnotify_title) {
 										show_notification(unread.unread_title[key]);
 									}
 								}

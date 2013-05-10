@@ -21,7 +21,9 @@ $( document ).ready(function() {
 					localStorage.setItem("password", $("#password")[0].value);
 					$("#warning")[0].innerHTML = ""
 					$("#success")[0].innerHTML = "Success! You can close this page now."
-					checkNew();
+					chrome.runtime.sendMessage({message: "checkNew"}, function(response) {
+						// Get response
+					});
 				} else{
 					$("#warning")[0].innerHTML = "Login failed!"
 					$("#success")[0].innerHTML = ""

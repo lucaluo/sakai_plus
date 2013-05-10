@@ -6,11 +6,19 @@ if (localStorage.getItem("lastVisitTime")){
 
 
 unread = {unread_num: 0, unread_title: []};
-checkInterval = 1; // unit: min
+checkInterval = 5; // unit: min
 
 // Check by schedule
 checkNew();
 setInterval(function(){checkNew()}, checkInterval * 60 * 1000);
+
+// Check when get message
+chrome.runtime.onMessage.addListener(
+  	function(request, sender, sendResponse) {
+    	if (request.message == "checkNew"){
+    		checkNew();
+    	}
+});
 
 
 sakaiTabId = null;

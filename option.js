@@ -4,9 +4,22 @@ $( document ).ready(function() {
 		$("#username")[0].value = localStorage.getItem("username");
 		$("#password")[0].value = localStorage.getItem("password");
 	}
+
+	if (localStorage.getItem("checkInterval")){
+		$("#refreshInterval")[0].value = localStorage.getItem("checkInterval");
+	} else{
+		$("#refreshInterval")[0].value = 5; // unit: min
+		localStorage.setItem("checkInterval", $("#refreshInterval")[0].value);
+	}
+
+	if (localStorage.getItem("ifNotify")){
+		$("#showNotifications")[0].value = localStorage.getItem("ifNotify");
+	} else{
+		$("#showNotifications")[0].value = false; // default no notification
+		localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
+	}
 	
-	$("#form").submit(function(e) {
-		e.preventDefault();
+	$("#save").click(function() {
 		if(!$("#username")[0].value || !$("#password")[0].value){
 			$("#warning")[0].innerHTML = "Please input Sakai username & password!"
 			$("#success")[0].innerHTML = ""
@@ -19,8 +32,10 @@ $( document ).ready(function() {
 					// Success, save it to local storage
 					localStorage.setItem("username", $("#username")[0].value);
 					localStorage.setItem("password", $("#password")[0].value);
+					localStorage.setItem("checkInterval", $("#refreshInterval")[0].value);
+					localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
 					$("#warning")[0].innerHTML = ""
-					$("#success")[0].innerHTML = "Success! You can close this page now."
+					$("#success")[0].innerHTML = "Succeed! You can close this page now."
 					chrome.runtime.sendMessage({message: "checkNew"}, function(response) {
 						// Get response
 					});

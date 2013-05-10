@@ -1,14 +1,32 @@
-if (localStorage.getItem("lastVisitTime")){
-	lastVisitTime = localStorage.getItem("lastVisitTime");
-} else{
-	lastVisitTime = new Date().getTime();
+function checkOptions() {
+	if (localStorage.getItem("lastVisitTime")){
+		lastVisitTime = localStorage.getItem("lastVisitTime");
+	} else{
+		lastVisitTime = new Date().getTime();
+		localStorage.setItem("lastVisitTime", lastVisitTime)
+	}
+
+	if (localStorage.getItem("checkInterval")){
+		checkInterval = localStorage.getItem("checkInterval");
+	} else{
+		checkInterval = 5; // unit: min
+		localStorage.setItem("checkInterval", checkInterval);
+	}
+
+	if (localStorage.getItem("ifNotify")){
+		if (localStorage.getItem("ifNotify") == "true"){
+			ifNotify = true;
+		} else {
+			ifNotify = false;
+		}
+	} else{
+		ifNotify = false; // default no notification
+		localStorage.setItem("ifNotify", ifNotify);
+	}
 }
 
-
-unread = {unread_num: 0, unread_title: []};
-checkInterval = 5; // unit: min
-
 // Check by schedule
+unread = {unread_num: 0, unread_title: []};
 checkNew();
 setInterval(function(){checkNew()}, checkInterval * 60 * 1000);
 
@@ -58,6 +76,7 @@ chrome.browserAction.onClicked.addListener(openSakai);
 
 function checkNew()
 {
+	checkOptions();
 	// Ask for usrname & pw
 	if (localStorage.getItem("username") && localStorage.getItem("password")){
 		userName = localStorage.getItem("username");
@@ -142,19 +161,26 @@ function checkNew()
 								}
 								// Check if new annoucement
 								var publishTime = new Date(annouce_time).getTime();
-								// if (publishTime >= lastVisitTime){
+								if (publishTime >= lastVisitTime){
 									request.unread_num += 1;
 									annouce_title = tochar(annouce_title);
 									request.unread_title[request.unread_num-1] = annouce_title;
 
 
 									console.log(request.unread_num + request.unread_title[request.unread_num-1]);
-								// }
+								}
 							}
 							if (outer_count == 0 && inner_count == 0){
 								unread = request;
 								chrome.browserAction.setBadgeBackgroundColor({color: "#009AC7"});
 								chrome.browserAction.setBadgeText({text: unread.unread_num.toString()});
+								// Show notification
+								if (ifNotify){
+									for (key in unread.unread_title) {
+										show_notification(unread.unread_title[key]);
+									}
+								}
+
 							}
 						});
 					});
@@ -164,6 +190,15 @@ function checkNew()
 	} else {
 		window.open('option.html','_blank');
 	}
+}
+
+function show_notification(title){
+	var notification = webkitNotifications.createNotification(
+	  	'icons/icon-48.png', 
+	  	'New Announcement',  // notification title
+	  	title  // notification body text
+	);
+	notification.show();
 }
 
 function tochar(input){

@@ -1,0 +1,104 @@
+
+* { margin: 0; padding: 0; }
+
+body {
+	font: 13px freesans,clean,sans-serif; 
+	color: #444444;
+}
+
+h1 { padding: 15px 0 15px; font-size: 30px; color: #444444; }
+h1 span, h2 span { color: #777777; }
+h3 { }
+
+#resetPasswordForm h1 { font-size: 26px; }
+
+p { margin: 10px 0; }
+
+a { color: #073594; text-decoration: none; }
+a:hover { color: #073594; text-decoration: underline; }
+
+label { color: #555555; padding: 4px 0; font-size: 14px; display: block; }
+
+.clear { clear: both; }
+.custom { font-family: monospace; }
+.error { color: #ff0000; display: none;}
+.formError { color: #ff0000; display: none; font-size: 15px; }
+
+#content {
+	width: 520px; height: auto;
+	margin: 10% auto 0 auto; padding: 15px;
+	background: #ffffff;
+
+	border-radius: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px;
+	border: 1px solid #e0e0e0; box-shadow: 0 1px 10px #afafaf;
+}
+
+#content #formContent { width: 300px; margin: 0 auto; }
+
+#content.options { width: 800px; margin: 50px auto;}
+#content.options #formContent { width: 620px; margin: 0 auto; }
+
+
+input[type="text"], input[type="password"] { 
+	border: 1px solid #dfdfdf; 
+	line-height: 10px; color: #222222;
+	font: 13px freesans,clean,sans-serif;
+	width: 150px; padding: 3px; 
+	border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px;
+}
+
+.textSpan{
+  float: right;
+}
+
+#warning {
+	font: 15px freesans,clean,sans-serif;
+	line-height: 10px;
+	float: right;
+	color: #F00E0E;
+}
+#success {
+	font: 15px freesans,clean,sans-serif;
+	line-height: 10px;
+	float: right;
+	color: #2B55AD;
+}
+
+.saveButton { 
+  float: right;
+  cursor: pointer; 
+  padding: 2px 7px;
+  box-shadow:  1px 1px 2px #aaaaaa; border: none;
+  font: 13px arial,freesans,clean,sans-serif; 
+  line-height: 19px; color: white; text-shadow: 1px 1px 1px #222222;
+  border-radius: 3px 2px; -webkit-border-radius: 3px 2px; -moz-border-radius: 3px 2px;
+  background: -webkit-gradient(linear, left top, left bottom, from(#3F6ED4), to(#2B55AD));}
+
+.saveButton:hover {
+  background: -webkit-gradient(linear, left top, left bottom, from(#2B55AD), to(#073594));
+}
+
+.saveButton:active {
+	background: -webkit-gradient(linear, left top, left bottom, from(#073594), to(#2253BA));
+}
+
+
+#footer { font-family: 'Istok Web',arial,freesans; font-size: 12px; padding: 20px 0 0 0; color: #777777; }
+#footer #left { float: left; }
+#footer #right { float: right; }
+
+#footer a { color: #444444; text-decoration: none; }
+#footer a:hover { color: #222222; text-decoration: underline; }
+#footer a strong { color: #58852E;}
+#footer a:hover strong { color: #58852E; text-decoration: underline; }
+
+.option { margin: 15px 0;}
+.option .info { float: left; }
+.option .title { font-size: 16px; margin: 0 0 3px 0;}
+.option .description { font: 13px "Istok Web",arial,freesans;  font-style: italic; color: #9f9f9f; width: 400px;}
+.option .value { float: right; margin-top: 8px; }
+.option .value select { width: 100px;  padding: 3px;}
+
+#accountInfo { padding-bottom: 10px;}
+#in_progress { display: none; text-align: center; }
+#popup #login { display: none; padding: 10px 0; text-align: center; }

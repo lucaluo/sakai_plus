@@ -1,47 +1,84 @@
+
 <html>
 <head>
-	<title>Sakai Plus Option Page</title>
-	<style type="text/css">
-		html, body {
-		    margin: 0;
-		    padding: 0;
-		    text-align: center; /* !!! */
-		}
-
-		#content {
-		    margin: 0 auto;
-		    text-align: left;
-		    width: 300px;
-		}
-		#header {
-		    text-align: center;
-		}
-		#warning {
-			color: #F00E0E;
-		}
-		#success {
-			color: #00AA14;
-		}
-	</style>
-	<script src="jquery-1.9.1.min.js"></script>
+    <title>Sakai Plus: Options</title>
+    <link rel="stylesheet" type="text/css" href="option.css"/>
+    <script src="jquery-1.9.1.min.js"></script>
 	<script src="option.js"></script>
 </head>
 <body>
-	<div id="content">
-		<div id="header">
-			<h2>Sakai Plus Option Page</h1>
-		</div>
-		<div id="main">
-			<form id="form">
-				Username: <input type="text" id="username">
-				<br>
-				Password: <input type="password" id="password">
-				<br>
-				<input type="submit" value="Save" id="save">
-				<p id="warning"></p>
-				<p id="success"></p>
-			</form>
-		</div>
-	</div>
+    <div id="content" class="options">
+        <div id="formContent">
+            <h1><span>Sakai Plus:</span> Options</h1>
+            <div class="clear"></div>
+
+            <div id="accountInfo" class="option">
+                <div class="info">
+                    <div class="title">Account</div>
+                    <div class="description">Input your Sakai username & password here</div>
+                </div>
+                <div class="value">
+                    <span class="textSpan">Username: <input type="text" id="username"></span>
+                    <br>
+                    <span class="textSpan">Password: <input type="password" id="password"></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="option">
+                <div class="info">
+                    <div class="title">Refresh Period</div>
+                    <div class="description">How often to check for new annoucements?</div>
+                </div>
+                <div class="value">
+                    <select id="refreshInterval" class="optionValue">
+                        <option value="1">1 minute</option>
+                        <option value="5">5 minutes</option>
+                        <option value="10">10 minutes</option>
+                        <option value="30">30 minutes</option>
+                    </select>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="option">
+                <div class="info">
+                    <div class="title">Show Notifications</div>
+                    <div class="description">Do you want to see notifications about new annoucements?</div>
+                </div>
+                <div class="value">
+                    <select id="showNotifications" class="optionValue">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div>
+            	<div class="value">
+	            	<button id="save" class="saveButton">Save</button>
+	            </div>
+	            <div class="clear"></div>
+	            <div>
+	            	<p id="warning"></p>
+	            	<p id="success"></p>
+	            </div>
+                <div class="clear"></div>
+            </div>
+            
+
+            <br/>
+        </div>
+
+        <div id="footer">
+            <div id="left">Copyright &copy; 2013 <a href="http://www.umich.edu/~jiaxiluo">Jiaxi Luo</a></div>
+            <div id="right">
+                <!-- <a href=""><strong></strong></a> |
+                <a href=""></a> -->
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
 </body>
 </html>

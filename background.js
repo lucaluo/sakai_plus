@@ -197,7 +197,7 @@ function checkNew()
 									notificationTime = new Date().getTime();
 									localStorage.setItem("notificationTime", notificationTime);
 									for (key in unnotify.unnotify_title) {
-										show_notification(unread.unread_title[key]);
+										show_notification(unnotify.unnotify_title[key]);
 									}
 								}
 

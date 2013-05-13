@@ -64,6 +64,11 @@ input[type="text"], input[type="password"] {
 	color: #2B55AD;
 }
 
+#wait-gif {
+	float: right;
+	display: none;
+}
+
 .saveButton { 
   float: right;
   cursor: pointer; 

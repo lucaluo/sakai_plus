@@ -181,11 +181,12 @@ function checkNew()
 
 									if (publishTime >= notificationTime){
 										unnotify.unnotify_num += 1;
-										unnotify.unnotify_title[unnotify.unnotify_num] = annouce_title;
+										unnotify.unnotify_title[unnotify.unnotify_num-1] = annouce_title;
 									}	
 
 
 									console.log(request.unread_num + request.unread_title[request.unread_num-1]);
+									console.log(unnotify.unnotify_num + unnotify.unnotify_title[unnotify.unnotify_num-1]);
 								}
 							}
 							if (outer_count == 0 && inner_count == 0){

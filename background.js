@@ -39,14 +39,16 @@ var runtimeOrExtension = chrome.runtime && chrome.runtime.sendMessage ?
 // Check by schedule
 unread = {unread_num: 0, unread_title: []};
 unnotify = {unnotify_num: 0, unnotify_title: []};
-checkNew();
-setInterval(function(){checkNew()}, checkInterval * 60 * 1000);
+
+checkOptions();
+checkConnection();
+setInterval(function(){checkConnection()}, checkInterval * 60 * 1000);
 
 // Check when get message
 chrome[runtimeOrExtension].onMessage.addListener(
   	function(request, sender, sendResponse) {
     	if (request.message == "checkNew"){
-    		checkNew();
+    		checkConnection();
     	}
 });
 
@@ -58,12 +60,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 		sakaiTabId = null;
 		lastVisitTime = new Date().getTime();
 		localStorage.setItem("lastVisitTime", lastVisitTime);
-		checkNew();	
+		checkConnection();	
 	}
 	// Sakai opened
 	else if (tab.url.indexOf("sakai.umji.sjtu.edu.cn") != -1){
 		sakaiTabId = tabId;
-		checkNew();
+		checkConnection();
 		chrome.tabs.sendMessage(sakaiTabId, unread, function(response) {
 			// Get response
 		});
@@ -75,7 +77,7 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 		sakaiTabId = null;
 		lastVisitTime = new Date().getTime();
 		localStorage.setItem("lastVisitTime", lastVisitTime);
-		checkNew();
+		checkConnection();
 	}
 });
 
@@ -87,11 +89,11 @@ function openSakai(){
 chrome.browserAction.onClicked.addListener(openSakai);
 
 function checkNew()
-{
+{	
+	console.log("Start check new announcements");
 	checkOptions();
 	unnotify = {unnotify_num: 0, unnotify_title: []};
-	// Ask for usrname & pw
-	if (localStorage.getItem("username") && localStorage.getItem("password")){
+	if (localStorage.getItem("username") && localStorage.getItem("password")){ // Ask for usrname & pw
 		userName = localStorage.getItem("username");
 		passWord = localStorage.getItem("password");
 
@@ -112,7 +114,7 @@ function checkNew()
 				var tab_end = tab_end1;
 			}
 			tab_strings = tab_strings.substring(0, tab_end);
-			console.log("tab_strings: " + tab_strings);
+			// console.log("tab_strings: " + tab_strings);
 
 			var tab_str_matches = tab_strings.match(/<li.*?<\/a>/g);
 
@@ -122,7 +124,7 @@ function checkNew()
 			for (var key in tab_str_matches){
 				// get tab url
 				var tab_url_match = tab_str_matches[key].match(/http.*?(?=")/);
-				console.log("tab_url_match: " + tab_url_match);
+				// console.log("tab_url_match: " + tab_url_match);
 				if (null !== tab_url_match){
 					var tab_url = tab_url_match[0];
 					console.log("tab_url: " + tab_url);
@@ -178,15 +180,13 @@ function checkNew()
 									request.unread_num += 1;
 									annouce_title = tochar(annouce_title);
 									request.unread_title[request.unread_num-1] = annouce_title;
+									console.log("unread:" + request.unread_num + request.unread_title[request.unread_num-1]);
 
 									if (publishTime >= notificationTime){
 										unnotify.unnotify_num += 1;
 										unnotify.unnotify_title[unnotify.unnotify_num-1] = annouce_title;
+										console.log("notification:" + unnotify.unnotify_num + unnotify.unnotify_title[unnotify.unnotify_num-1]);
 									}	
-
-
-									console.log(request.unread_num + request.unread_title[request.unread_num-1]);
-									console.log(unnotify.unnotify_num + unnotify.unnotify_title[unnotify.unnotify_num-1]);
 								}
 							}
 							if (outer_count == 0 && inner_count == 0){
@@ -208,8 +208,37 @@ function checkNew()
 				}
 			}
 		});
+	console.log("CheckNew End");
 	} else {
 		window.open('option.html','_blank');
+	}
+}
+
+
+function checkConnection(){
+	// http://sakai.umji.sjtu.edu.cn/library/skin/neo-default/images/logo_inst.gif
+
+	var Url = 'http://sakai.umji.sjtu.edu.cn/'
+	// Url = "http://www.baidu.com";
+	console.log("Start check Connection");
+	xmlHttp = new XMLHttpRequest(); 
+    xmlHttp.onreadystatechange = ProcessRequest;
+    xmlHttp.open( "GET", Url, true );
+    xmlHttp.send( null );
+
+    function ProcessRequest() 
+	{
+		console.log("Process Request");
+		console.log(xmlHttp.readyState);
+		console.log(xmlHttp.status);
+		if (xmlHttp.readyState = 4 && xmlHttp.status == 200){
+			console.log("Connection Success");
+			checkNew();
+		} else if (xmlHttp.readyState = 4 && xmlHttp.status == 0){
+			console.log("Connection Fail");
+			chrome.browserAction.setBadgeBackgroundColor({color: "#000"});
+			chrome.browserAction.setBadgeText({text: "X"});
+		}
 	}
 }
 

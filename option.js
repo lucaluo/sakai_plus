@@ -24,9 +24,10 @@ $( document ).ready(function() {
 	}
 	
 	$("#save").click(function() {
+		$("#warning")[0].innerHTML = "";
+		$("#success")[0].innerHTML = "";
 		if(!$("#username")[0].value || !$("#password")[0].value){
 			$("#warning")[0].innerHTML = "Please input Sakai username & password!"
-			$("#success")[0].innerHTML = ""
 		} else {
 			// Test validity of username & psw
 			var login_url = "http://sakai.umji.sjtu.edu.cn/portal/relogin";
@@ -42,7 +43,6 @@ $( document ).ready(function() {
 					localStorage.setItem("checkInterval", $("#refreshInterval")[0].value);
 					localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
 					$("#wait-gif").css("display", "none");
-					$("#warning")[0].innerHTML = ""
 					$("#success")[0].innerHTML = "Succeed! You can close this page now."
 					chrome[runtimeOrExtension].sendMessage({message: "checkNew"}, function(response) {
 						// Get response
@@ -50,7 +50,6 @@ $( document ).ready(function() {
 				} else{
 					$("#wait-gif").css("display", "none");
 					$("#warning")[0].innerHTML = "Login failed!"
-					$("#success")[0].innerHTML = ""
 				}
 			});
 		}

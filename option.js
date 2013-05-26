@@ -1,3 +1,14 @@
+// Track usage by google analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-41224216-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 // Bind event
 var runtimeOrExtension = chrome.runtime && chrome.runtime.sendMessage ?
                          'runtime' : 'extension';
@@ -16,12 +27,12 @@ $( document ).ready(function() {
 		localStorage.setItem("checkInterval", $("#refreshInterval")[0].value);
 	}
 
-	if (localStorage.getItem("ifNotify")){
-		$("#showNotifications")[0].value = localStorage.getItem("ifNotify");
-	} else{
-		$("#showNotifications")[0].value = false; // default no notification
-		localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
-	}
+	// if (localStorage.getItem("ifNotify")){
+	// 	$("#showNotifications")[0].value = localStorage.getItem("ifNotify");
+	// } else{
+	// 	$("#showNotifications")[0].value = false; // default no notification
+	// 	localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
+	// }
 	
 	$("#save").click(function() {
 		$("#warning")[0].innerHTML = "";
@@ -41,7 +52,7 @@ $( document ).ready(function() {
 					localStorage.setItem("username", $("#username")[0].value);
 					localStorage.setItem("password", $("#password")[0].value);
 					localStorage.setItem("checkInterval", $("#refreshInterval")[0].value);
-					localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
+					// localStorage.setItem("ifNotify", $("#showNotifications")[0].value);
 					$("#wait-gif").css("display", "none");
 					$("#success")[0].innerHTML = "Succeed! You can close this page now."
 					chrome[runtimeOrExtension].sendMessage({message: "checkNew"}, function(response) {

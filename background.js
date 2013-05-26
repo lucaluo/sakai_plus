@@ -1,45 +1,26 @@
-function checkOptions() {
-	if (localStorage.getItem("lastVisitTime")){
-		lastVisitTime = localStorage.getItem("lastVisitTime");
-	} else{
-		lastVisitTime = new Date().getTime();
-		localStorage.setItem("lastVisitTime", lastVisitTime);
-	}
+// Track usage by google analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-41224216-1']);
+_gaq.push(['_trackPageview']);
 
-	if (localStorage.getItem("notificationTime")){
-		notificationTime = localStorage.getItem("notificationTime");
-	} else{
-		notificationTime = new Date().getTime();
-		localStorage.setItem("notificationTime", notificationTime);
-	}
+(function() {
+  	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  	ga.src = 'https://ssl.google-analytics.com/ga.js';
+  	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 
-	if (localStorage.getItem("checkInterval")){
-		checkInterval = localStorage.getItem("checkInterval");
-	} else{
-		checkInterval = 5; // unit: min
-		localStorage.setItem("checkInterval", checkInterval);
-	}
-
-	if (localStorage.getItem("ifNotify")){
-		if (localStorage.getItem("ifNotify") == "true"){
-			ifNotify = true;
-		} else {
-			ifNotify = false;
-		}
-	} else{
-		ifNotify = false; // default no notification
-		localStorage.setItem("ifNotify", ifNotify);
-	}
-}
+console.log(new Date().getTime() + ": " + "Sakai Plus Start");
 
 // Bind event
 var runtimeOrExtension = chrome.runtime && chrome.runtime.sendMessage ?
                          'runtime' : 'extension';
 
-// Check by schedule
+// Initialization
 unread = {unread_num: 0, unread_title: []};
 unnotify = {unnotify_num: 0, unnotify_title: []};
+checking_count = 0;
 
+// Check by schedule
 checkOptions();
 checkConnection();
 setInterval(function(){checkConnection()}, checkInterval * 60 * 1000);
@@ -59,6 +40,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 	if ((tabId == sakaiTabId) && (tab.url.indexOf("sakai.umji.sjtu.edu.cn") == -1)){
 		sakaiTabId = null;
 		lastVisitTime = new Date().getTime();
+		console.log(new Date().getTime() + ": " + "lastVisitTime update: " + lastVisitTime);
 		localStorage.setItem("lastVisitTime", lastVisitTime);
 		checkConnection();	
 	}
@@ -76,6 +58,7 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 	if (tabId == sakaiTabId){
 		sakaiTabId = null;
 		lastVisitTime = new Date().getTime();
+		console.log(new Date().getTime() + ": " + "lastVisitTime update: " + lastVisitTime);
 		localStorage.setItem("lastVisitTime", lastVisitTime);
 		checkConnection();
 	}
@@ -83,14 +66,18 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 
 
 function openSakai(){
-	window.open('http://sakai.umji.sjtu.edu.cn/','_blank')
+	window.open('http://sakai.umji.sjtu.edu.cn/','_blank');
+	// var _gaq = _gaq || [];
+	// _gaq.push(['_setAccount', 'UA-41224216-1']);
+	// _gaq.push(['_trackEvent', 'clicke_sakai_plus_icon']);
 }
 
 chrome.browserAction.onClicked.addListener(openSakai);
 
 function checkNew()
 {	
-	console.log("Start check new announcements");
+	checking_count ++;
+	console.log(new Date().getTime() + ": " + "Start check new announcements");
 	checkOptions();
 	unnotify = {unnotify_num: 0, unnotify_title: []};
 	if (localStorage.getItem("username") && localStorage.getItem("password")){ // Ask for usrname & pw
@@ -114,7 +101,7 @@ function checkNew()
 				var tab_end = tab_end1;
 			}
 			tab_strings = tab_strings.substring(0, tab_end);
-			// console.log("tab_strings: " + tab_strings);
+			// console.log(new Date().getTime() + ": " + "tab_strings: " + tab_strings);
 
 			var tab_str_matches = tab_strings.match(/<li.*?<\/a>/g);
 
@@ -124,10 +111,10 @@ function checkNew()
 			for (var key in tab_str_matches){
 				// get tab url
 				var tab_url_match = tab_str_matches[key].match(/http.*?(?=")/);
-				// console.log("tab_url_match: " + tab_url_match);
+				// console.log(new Date().getTime() + ": " + "tab_url_match: " + tab_url_match);
 				if (null !== tab_url_match){
 					var tab_url = tab_url_match[0];
-					console.log("tab_url: " + tab_url);
+					console.log(new Date().getTime() + ": " + "tab_url: " + tab_url);
 				}
 
 				// get tab content
@@ -180,35 +167,36 @@ function checkNew()
 									request.unread_num += 1;
 									annouce_title = tochar(annouce_title);
 									request.unread_title[request.unread_num-1] = annouce_title;
-									console.log("unread:" + request.unread_num + request.unread_title[request.unread_num-1]);
+									console.log(new Date().getTime() + ": " + "Unread: " + "unread_num: " + request.unread_num + "unread_title: " + request.unread_title[request.unread_num-1] + "unread_time: " + publishTime);
 
 									if (publishTime >= notificationTime){
 										unnotify.unnotify_num += 1;
 										unnotify.unnotify_title[unnotify.unnotify_num-1] = annouce_title;
-										console.log("notification:" + unnotify.unnotify_num + unnotify.unnotify_title[unnotify.unnotify_num-1]);
+										console.log(new Date().getTime() + ": " + "Notification: " + "unnotify_num: " + unnotify.unnotify_num + "unnotify_title: " + unnotify.unnotify_title[unnotify.unnotify_num-1] + "unnotify_time: " + publishTime);
 									}	
 								}
 							}
 							if (outer_count == 0 && inner_count == 0){
+								checking_count --;
 								unread = request;
 								chrome.browserAction.setBadgeBackgroundColor({color: "#009AC7"});
 								chrome.browserAction.setBadgeText({text: unread.unread_num.toString()});
 								// Show notification
-								if (ifNotify){
+								if (ifNotify && unnotify.unread_num > 0){
 									notificationTime = new Date().getTime();
+									console.log(new Date().getTime() + ": " + "Notification Time update: " + notificationTime);
 									localStorage.setItem("notificationTime", notificationTime);
 									for (key in unnotify.unnotify_title) {
 										show_notification(unnotify.unnotify_title[key]);
 									}
 								}
-
 							}
 						});
 					});
 				}
 			}
+		console.log(new Date().getTime() + ": " + "CheckNew End");
 		});
-	console.log("CheckNew End");
 	} else {
 		window.open('option.html','_blank');
 	}
@@ -219,8 +207,7 @@ function checkConnection(){
 	// http://sakai.umji.sjtu.edu.cn/library/skin/neo-default/images/logo_inst.gif
 
 	var Url = 'http://sakai.umji.sjtu.edu.cn/'
-	// Url = "http://www.baidu.com";
-	console.log("Start check Connection");
+	console.log(new Date().getTime() + ": " + "Start check Connection");
 	xmlHttp = new XMLHttpRequest(); 
     xmlHttp.onreadystatechange = ProcessRequest;
     xmlHttp.open( "GET", Url, true );
@@ -228,14 +215,16 @@ function checkConnection(){
 
     function ProcessRequest() 
 	{
-		console.log("Process Request");
-		console.log(xmlHttp.readyState);
-		console.log(xmlHttp.status);
-		if (xmlHttp.readyState = 4 && xmlHttp.status == 200){
-			console.log("Connection Success");
+		console.log(new Date().getTime() + ": " + "Process Request");
+		console.log(new Date().getTime() + ": " + "Ready State: " + xmlHttp.readyState);
+		console.log(new Date().getTime() + ": " + "Status: " + xmlHttp.status);
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200 && checking_count == 0){
+			console.log(new Date().getTime() + ": " + "Connection Success");
 			checkNew();
-		} else if (xmlHttp.readyState = 4 && xmlHttp.status == 0){
-			console.log("Connection Fail");
+		} else if (xmlHttp.readyState == 4 && xmlHttp.status == 200 && checking_count > 0){
+			console.log(new Date().getTime() + ": " + "Checking has been in progress");
+		} else if (xmlHttp.readyState == 4 && xmlHttp.status == 0){
+			console.log(new Date().getTime() + ": " + "Connection Fail");
 			chrome.browserAction.setBadgeBackgroundColor({color: "#000"});
 			chrome.browserAction.setBadgeText({text: "X"});
 		}
@@ -243,12 +232,57 @@ function checkConnection(){
 }
 
 function show_notification(title){
+	console.log(new Date().getTime() + ": " + "Show Notification: " + title);
 	var notification = webkitNotifications.createNotification(
 	  	'icons/icon-48.png', 
 	  	'New Announcement',  // notification title
 	  	title  // notification body text
 	);
 	notification.show();
+}
+
+function checkOptions() {
+	console.log(new Date().getTime() + ": " + "Check Options");
+	if (localStorage.getItem("lastVisitTime")){
+		lastVisitTime = localStorage.getItem("lastVisitTime");
+		console.log(new Date().getTime() + ": " + "Get lastVisitTime: " + lastVisitTime);
+	} else{
+		lastVisitTime = new Date().getTime();
+		console.log(new Date().getTime() + ": " + "New lastVisitTime: " + lastVisitTime);
+		localStorage.setItem("lastVisitTime", lastVisitTime);
+	}
+
+	if (localStorage.getItem("notificationTime")){
+		notificationTime = localStorage.getItem("notificationTime");
+		console.log(new Date().getTime() + ": " + "Get notificationTime: " + notificationTime);
+	} else{
+		notificationTime = new Date().getTime();
+		console.log(new Date().getTime() + ": " + "New notificationTime: " + notificationTime);
+		localStorage.setItem("notificationTime", notificationTime);
+	}
+
+	if (localStorage.getItem("checkInterval")){
+		checkInterval = localStorage.getItem("checkInterval");
+		console.log(new Date().getTime() + ": " + "Get checkInterval: " + checkInterval);
+	} else{
+		checkInterval = 5; // unit: min
+		console.log(new Date().getTime() + ": " + "New checkInterval: " + checkInterval);
+		localStorage.setItem("checkInterval", checkInterval);
+	}
+
+	if (localStorage.getItem("ifNotify")){
+		if (localStorage.getItem("ifNotify") == "true"){
+			ifNotify = true;
+		} else {
+			ifNotify = false;
+		}
+		console.log(new Date().getTime() + ": " + "Get ifNotify: " + ifNotify);
+	} else{
+		ifNotify = false; // default no notification
+		console.log(new Date().getTime() + ": " + "New ifNotify: " + ifNotify);
+		localStorage.setItem("ifNotify", ifNotify);
+	}
+	ifNotify = false;
 }
 
 function tochar(input){

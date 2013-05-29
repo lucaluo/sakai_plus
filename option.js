@@ -23,7 +23,7 @@ $( document ).ready(function() {
 	if (localStorage.getItem("checkInterval")){
 		$("#refreshInterval")[0].value = localStorage.getItem("checkInterval");
 	} else{
-		$("#refreshInterval")[0].value = 5; // unit: min
+		$("#refreshInterval")[0].value = 1; // unit: min
 		localStorage.setItem("checkInterval", $("#refreshInterval")[0].value);
 	}
 

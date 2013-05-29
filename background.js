@@ -218,11 +218,9 @@ function checkConnection(){
 		console.log(new Date().getTime() + ": " + "Process Request");
 		console.log(new Date().getTime() + ": " + "Ready State: " + xmlHttp.readyState);
 		console.log(new Date().getTime() + ": " + "Status: " + xmlHttp.status);
-		if (xmlHttp.readyState == 4 && xmlHttp.status == 200 && checking_count == 0){
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
 			console.log(new Date().getTime() + ": " + "Connection Success");
 			checkNew();
-		} else if (xmlHttp.readyState == 4 && xmlHttp.status == 200 && checking_count > 0){
-			console.log(new Date().getTime() + ": " + "Checking has been in progress");
 		} else if (xmlHttp.readyState == 4 && xmlHttp.status == 0){
 			console.log(new Date().getTime() + ": " + "Connection Fail");
 			chrome.browserAction.setBadgeBackgroundColor({color: "#000"});
@@ -265,7 +263,7 @@ function checkOptions() {
 		checkInterval = localStorage.getItem("checkInterval");
 		console.log(new Date().getTime() + ": " + "Get checkInterval: " + checkInterval);
 	} else{
-		checkInterval = 5; // unit: min
+		checkInterval = 1; // unit: min
 		console.log(new Date().getTime() + ": " + "New checkInterval: " + checkInterval);
 		localStorage.setItem("checkInterval", checkInterval);
 	}
